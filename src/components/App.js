@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import Header from "./Header";
+import Register from "./Register";
+import Login from "./Login";
+import ProtectedRoute from "./ProtectedRoute";
 import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
@@ -9,9 +12,12 @@ import ImagePopup from "./ImagePopup";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+import InfoTooltip from "./InfoTooltip";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
 
@@ -115,18 +121,28 @@ function App() {
     <div className="App root">
       <CurrentUserContext.Provider value={currentUser}>
         <Header />
-
-        <Main
-          cards={cards}
-          onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
-          onEditProfile={handleEditProfileClick}
-          onAddPlace={handleAddPlaceClick}
-          onEditAvatar={handleEditAvatarClick}
-          onCardClick={handleCardClick}
-        />
-
-        <Footer />
+    
+        <Routes>
+          <Route path='/sign-up' element={<Register />}/>
+          <Route path='/sign-in' element={<Login />}/>
+          <Route exact path='/' element={
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+            
+              <Main
+                cards={cards}
+                onCardLike={handleCardLike}
+                onCardDelete={handleCardDelete}
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onEditAvatar={handleEditAvatarClick}
+                onCardClick={handleCardClick}
+              />
+              <Footer />
+              
+            </ProtectedRoute>
+          }/>
+          <Route path='*' element={isLoggedIn ? <Navigate to='/' /> : <Navigate to='/sign-in' />}/>
+        </Routes>
 
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
