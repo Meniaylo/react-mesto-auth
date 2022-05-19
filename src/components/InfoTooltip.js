@@ -2,7 +2,7 @@ import React from "react";
 
 const InfoTooltip = () => {
   return (
-    <div></div>
+    <div>Воувоу палехче</div>
   )
 }
 
