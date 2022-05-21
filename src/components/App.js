@@ -14,7 +14,8 @@ import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import InfoTooltip from "./InfoTooltip";
 import { Routes, Route, Navigate } from "react-router-dom";
-
+import regOkImgPath from '../images/registration-ok.svg';
+import regFailImgPath from '../images/registration-fail.svg';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -176,6 +177,10 @@ function App() {
         </PopupWithForm>
 
         <ImagePopup selectedCard={selectedCard} onClose={closeAllPopups} />
+
+        <InfoTooltip isOpen={true} imgSrc={regOkImgPath} title='Вы успешно зарегистрировались!' />
+        <InfoTooltip isOpen={false} imgSrc={regFailImgPath} title='Что-то пошло не так! Попробуйте ещё раз.' />
+
       </CurrentUserContext.Provider>
     </div>
   );
