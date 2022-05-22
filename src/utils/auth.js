@@ -4,7 +4,7 @@ export const register = ({ password, email }) => {
   return fetch(`${BASE_URL}/signup`, {
     method: 'POST',
     headers: {
-      'Accept': 'application/json',
+      // 'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ password, email })
@@ -12,11 +12,11 @@ export const register = ({ password, email }) => {
   .then(handleServerResponse)
 }
 
-export const authorization = () => {
+export const login = ({ password, email }) => {
   return fetch(`${BASE_URL}/signin`, {
     method: 'POST',
     headers: {
-      'Accept': 'application/json',
+      // 'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ password, email })
@@ -33,6 +33,6 @@ const handleServerResponse = (res) => {
     return res.json();
   }
   return Promise.reject(`Ошибка: ${res.status}`).then(
-    (dataObject) => dataObject
-  );
+    dataObject => dataObject
+  )
 }

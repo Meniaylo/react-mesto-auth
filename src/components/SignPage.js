@@ -6,7 +6,7 @@ const SignPage = ({ title, submitText, submitFunc, children }) => {
     email: '',
     password: ''
   });
-  
+
   const handleInputChange = (e) => {
     const {name, value} = e.target;
     setUserData((prev) => ({
@@ -18,11 +18,9 @@ const SignPage = ({ title, submitText, submitFunc, children }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { email, password } = userData;
-    console.log('submitFunc:', submitFunc);
-    console.log('email:', email);
-    console.log('password:', password);
+    console.log('userData', userData);
     if (submitFunc && email && password) {
-      submitFunc(email, password);
+      submitFunc(userData);
     }
   }
 

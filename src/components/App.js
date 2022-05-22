@@ -178,7 +178,7 @@ function App() {
 
         <ImagePopup selectedCard={selectedCard} onClose={closeAllPopups} />
 
-        <InfoTooltip isOpen={true} imgSrc={regOkImgPath} title='Вы успешно зарегистрировались!' />
+        <InfoTooltip isOpen={false} imgSrc={regOkImgPath} title='Вы успешно зарегистрировались!' />
         <InfoTooltip isOpen={false} imgSrc={regFailImgPath} title='Что-то пошло не так! Попробуйте ещё раз.' />
 
       </CurrentUserContext.Provider>
