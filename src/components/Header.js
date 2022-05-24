@@ -2,9 +2,10 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logoPath from '../images/logo.svg';
 
-const Header = () => {
+const Header = ({ email, handleSignOut }) => {
 
   const location = useLocation();
+  console.log('email from header', email);
 
   return (
     <header className="header">
@@ -20,8 +21,8 @@ const Header = () => {
         )}
         {location.pathname === '/' && (
           <>
-            <p className="header__email">Email</p>
-            <Link className="header__item link" to='/sign-in'>Выйти</Link>
+            <p className="header__item header__item_content_email link">{email}</p>
+            <p className="header__item header__item_content_sign-out link" onClick={handleSignOut}>Выйти</p>
           </>
         )}
       </div>

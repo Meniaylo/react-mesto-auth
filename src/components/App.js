@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import api from "../utils/Api";
+import * as auth from "./../utils/auth";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import Header from "./Header";
 import Register from "./Register";
@@ -13,14 +15,19 @@ import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import InfoTooltip from "./InfoTooltip";
-import { Routes, Route, Navigate } from "react-router-dom";
-import regOkImgPath from '../images/registration-ok.svg';
-import regFailImgPath from '../images/registration-fail.svg';
+import regOkImgPath from "../images/registration-ok.svg";
+import regFailImgPath from "../images/registration-fail.svg";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
+  const [tooltipState, setTooltipState] = useState({
+    isOpen: false,
+    imgSrc: '',
+    text: '',
+  });
+  const [userEmail, setUserEmail] = useState('');
 
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
@@ -28,7 +35,11 @@ function App() {
   const [isConfirmAvatarPopupOpen, setIsConfirmAvatarPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
 
+  const navigate = useNavigate();
+
   useEffect(() => {
+    checkToken();
+
     Promise.all([api.getUserInfo(), api.getInitialCards()])
       .then(([userData, initialCards]) => {
         setCurrentUser(userData);
@@ -39,7 +50,25 @@ function App() {
       });
   }, []);
 
-  function handleCardLike(card) {
+  const checkToken = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      auth.checkToken(token)
+        .then(res => {
+          setUserEmail(res.data.email);
+          setIsLoggedIn(true);
+          navigate('/');
+        })
+    }
+  }
+
+  const handleSignOut = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+    navigate('/login');
+}
+
+  const handleCardLike = (card) => {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
     api.changeLikeCardStatus(card._id, !isLiked)
@@ -118,14 +147,66 @@ function App() {
     setSelectedCard({});
   }
 
+  const closeTooltip = () => {
+    setTooltipState((prev) => ({
+      ...prev,
+      isOpen: false,
+    }));
+    if (tooltipState.imgSrc === regOkImgPath) {
+      setTimeout(() => {
+        navigate('/sign-in');
+      }, 444);
+    }
+  };
+
+  const handleRegisterSubmit = (userData) => {
+    auth.register(userData)
+      .then((res) => {
+        setUserEmail(res.email);
+        setTooltipState({
+          isOpen: true,
+          imgSrc: regOkImgPath,
+          text: "Вы успешно зарегистрировались!",
+        });
+      })
+      .catch((err) => {
+        console.log("error!", err);
+        setTooltipState({
+          isOpen: true,
+          imgSrc: regFailImgPath,
+          text: "Что-то пошло не так! Попробуйте ещё раз.",
+        });
+      });
+  };
+
+  const handleLoginSubmit = (userData) => {
+    auth.login(userData)
+      .then((res) => {
+        console.log("res:", res);
+        if (res.token) {
+          localStorage.setItem('token', res.token);
+          setIsLoggedIn(true);
+          navigate('/');
+        }
+      })
+      .catch((err) => {
+        console.log("error!", err);
+        setTooltipState({
+          isOpen: true,
+          imgSrc: regFailImgPath,
+          text: "Что-то пошло не так! Попробуйте ещё раз.",
+        });
+      });
+  };
+
   return (
-    <div className="App root">
+    <div className={`App root ${!isLoggedIn && 'root_notLoggedIn'}`}>
       <CurrentUserContext.Provider value={currentUser}>
-        <Header />
+        <Header email={userEmail} handleSignOut={handleSignOut} />
     
         <Routes>
-          <Route path='/sign-up' element={<Register />}/>
-          <Route path='/sign-in' element={<Login />}/>
+          <Route path='/sign-up' element={<Register onRegister={handleRegisterSubmit} />}/>
+          <Route path='/sign-in' element={<Login onLogin={handleLoginSubmit} />}/>
           <Route exact path='/' element={
             <ProtectedRoute isLoggedIn={isLoggedIn}>
             
@@ -178,8 +259,12 @@ function App() {
 
         <ImagePopup selectedCard={selectedCard} onClose={closeAllPopups} />
 
-        <InfoTooltip isOpen={false} imgSrc={regOkImgPath} title='Вы успешно зарегистрировались!' />
-        <InfoTooltip isOpen={false} imgSrc={regFailImgPath} title='Что-то пошло не так! Попробуйте ещё раз.' />
+        <InfoTooltip
+        isOpen={tooltipState.isOpen}
+        onClose={closeTooltip}
+        imgSrc={tooltipState.imgSrc}
+        title={tooltipState.text}
+      />
 
       </CurrentUserContext.Provider>
     </div>

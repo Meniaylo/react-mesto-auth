@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 const SignPage = ({ title, submitText, submitFunc, children }) => {
   
-  const [userData, setUserData] = useState({
+  const [state, setState] = useState({
     email: '',
     password: ''
   });
 
   const handleInputChange = (e) => {
     const {name, value} = e.target;
-    setUserData((prev) => ({
+    setState((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -17,43 +17,43 @@ const SignPage = ({ title, submitText, submitFunc, children }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { email, password } = userData;
-    console.log('userData', userData);
+    const { email, password } = state;
+    console.log('state', state);
     if (submitFunc && email && password) {
-      submitFunc(userData);
+      submitFunc(state);
     }
   }
 
   return (
-    <div className='sign-page'>
-      <h2 className='sign-page__title'>{title}</h2>
-      <form className='sign-form' onSubmit={handleSubmit}>
-        <div>
-          <input
-            className='sign-form__input'
-            placeholder='Email'
-            type='email'
-            name='email'
-            value={userData.email}
-            onChange={handleInputChange}
-            required>
-          </input>
-          <input
-            className='sign-form__input'
-            placeholder='Пароль'
-            type='password'
-            name='password'
-            value={userData.password}
-            minLength="2"
-            maxLength="10"
-            onChange={handleInputChange}
-            required>
-          </input>
-        </div>
-        <button className='sign-form__submit-btn'>{submitText}</button>
-        {children}
-      </form>
-    </div>
+      <div className='sign-page'>
+        <h2 className='sign-page__title'>{title}</h2>
+        <form className='sign-form' onSubmit={handleSubmit}>
+          <div>
+            <input
+              className='sign-form__input'
+              placeholder='Email'
+              type='email'
+              name='email'
+              value={state.email}
+              onChange={handleInputChange}
+              required>
+            </input>
+            <input
+              className='sign-form__input'
+              placeholder='Пароль'
+              type='password'
+              name='password'
+              value={state.password}
+              minLength="2"
+              maxLength="10"
+              onChange={handleInputChange}
+              required>
+            </input>
+          </div>
+          <button className='sign-form__submit-btn'>{submitText}</button>
+          {children}
+        </form>
+      </div>
   )
 }
 
