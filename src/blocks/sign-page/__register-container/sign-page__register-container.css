@@ -10,3 +10,9 @@
   margin: auto;
   width: fit-content;
 }
+
+@media screen and (max-width: 720px) {
+  .sign-page__register-container {
+    bottom: -37px;
+  }
+}

@@ -182,7 +182,6 @@ function App() {
   const handleLoginSubmit = (userData) => {
     auth.login(userData)
       .then((res) => {
-        console.log("res:", res);
         if (res.token) {
           localStorage.setItem('token', res.token);
           setIsLoggedIn(true);
