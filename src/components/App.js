@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import api from "../utils/Api";
 import * as auth from "./../utils/auth";
@@ -40,7 +40,8 @@ function App() {
   useEffect(() => {
     checkToken();
 
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
+    if (isLoggedIn) {
+      Promise.all([api.getUserInfo(), api.getInitialCards()])
       .then(([userData, initialCards]) => {
         setCurrentUser(userData);
         setCards(initialCards);
@@ -48,6 +49,7 @@ function App() {
       .catch((err) => {
         console.log(`Ошибка! ${err}`);
       });
+    }
   }, []);
 
   const checkToken = () => {
@@ -58,6 +60,9 @@ function App() {
           setUserEmail(res.data.email);
           setIsLoggedIn(true);
           navigate('/');
+        })
+        .catch((err) => {
+          console.log(`Ошибка! ${err}`);
         })
     }
   }

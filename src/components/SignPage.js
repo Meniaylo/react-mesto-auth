@@ -18,7 +18,6 @@ const SignPage = ({ title, submitText, submitFunc, children }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { email, password } = state;
-    console.log('state', state);
     if (submitFunc && email && password) {
       submitFunc(state);
     }
@@ -50,7 +49,7 @@ const SignPage = ({ title, submitText, submitFunc, children }) => {
               required>
             </input>
           </div>
-          <button className='sign-form__submit-btn'>{submitText}</button>
+          <button className='sign-form__submit-btn link'>{submitText}</button>
           {children}
         </form>
       </div>

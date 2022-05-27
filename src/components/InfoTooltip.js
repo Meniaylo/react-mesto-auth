@@ -2,7 +2,6 @@ import React from "react";
 
 const InfoTooltip = ({ isOpen, onClose, imgSrc, title }) => {
 
-
   return (
     <section className={`popup ${isOpen && 'popup_active'}`}>
       <div className="popup__container popup__container_content_info">

@@ -22,7 +22,7 @@ const Header = ({ email, handleSignOut }) => {
             <Link className="header__item link" to='/sign-up'>Регистрация</Link>
           )}
           {location.pathname === '/sign-up' && (
-            <Link className="header__item link" to='/sign-in'>Войти</Link>
+            <Link className="header__item link" to='/sign-in'>Вход</Link>
           )}
           {location.pathname === '/' && (
             <>
